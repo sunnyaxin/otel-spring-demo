@@ -16,6 +16,7 @@
 
 package com.example.otelspringdemo;
 
+import io.opentelemetry.api.metrics.Meter;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static io.opentelemetry.api.GlobalOpenTelemetry.getMeter;
 import static io.opentelemetry.api.GlobalOpenTelemetry.getTracer;
 
 @RestController
@@ -30,6 +32,7 @@ public class DemoController {
 
     Logger logger = LoggerFactory.getLogger(getClass());
     Tracer tracer = getTracer("com.example.otelspringdemo.DemoController");
+    Meter meter = getMeter("com.example.otelspringdemo.DemoController");
 
     @GetMapping("/hello")
     public String handleSingle() {
@@ -39,6 +42,8 @@ public class DemoController {
         span.setAttribute("hello attr", "test value");
         span.addEvent("hello-doing-work");
         span.end();
+
+        meter.counterBuilder("hello_counter").build().add(1);
 
         return "Hello, World!";
     }
