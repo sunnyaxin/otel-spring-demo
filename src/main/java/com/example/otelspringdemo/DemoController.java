@@ -18,12 +18,17 @@ package com.example.otelspringdemo;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 public class DemoController {
 
+    Logger logger = LoggerFactory.getLogger(getClass());
+
     @GetMapping("/hello")
     public String handleSingle() {
+        logger.info("Receiving the hello request");
         return "Hello, World!";
     }
 }

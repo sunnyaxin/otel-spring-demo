@@ -20,5 +20,15 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // Use log4j2 for logging
+    // https://docs.spring.io/spring-boot/docs/2.7.18/reference/html/howto.html#howto.logging.log4j
+    implementation "org.springframework.boot:spring-boot-starter-log4j2"
+    modules {
+        module("org.springframework.boot:spring-boot-starter-logging") {
+            replacedBy("org.springframework.boot:spring-boot-starter-log4j2", "Use Log4j2 instead of Logback")
+        }
+    }
+    implementation "org.apache.logging.log4j:log4j-layout-template-json"
 }
 

@@ -12,4 +12,8 @@ COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
 
-ENTRYPOINT ["java","-cp","app:app/lib/*","com.example.otelspringdemo.DemoApplication"]
+# [START opentelemetry_instrumentation_agent_dockerfile]
+RUN wget -O /opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.31.0/opentelemetry-javaagent.jar
+CMD sh -c "java -javaagent:/opentelemetry-javaagent.jar -cp app:app/lib/* com.example.otelspringdemo.DemoApplication \
+	2>&1 | tee /var/log/app.log"
+# [END opentelemetry_instrumentation_agent_dockerfile]

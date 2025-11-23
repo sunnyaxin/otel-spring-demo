@@ -5,13 +5,24 @@ services:
     build: .
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otelcol:4317
-      - OTEL_SERVICE_NAME=otel-quickstart-spring-boot
-      - OTEL_METRIC_EXPORT_INTERVAL=5000
+      - OTEL_SERVICE_NAME=otel-spring-demo
+#      - OTEL_METRIC_EXPORT_INTERVAL=5000
       - OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION=BASE2_EXPONENTIAL_BUCKET_HISTOGRAM
     volumes:
       - logs:/var/log:rw
     ports:
-      - 8080:8080
+      - "8080:8080"
+    depends_on:
+      - "otelcol"
+
+  otelcol:
+    image: otel/opentelemetry-collector-contrib:0.115.1
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml:ro
+      - logs:/var/log:ro
+    environment:
+      - GOOGLE_CLOUD_PROJECT
+      - GOOGLE_CLOUD_QUOTA_PROJECT
 
 volumes:
   logs:
